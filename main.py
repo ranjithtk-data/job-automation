@@ -54,10 +54,30 @@ def main():
 
     jobs_text = "\n\n".join(unique_jobs)
 
-    send_email(
-        "Daily Data Analyst / MIS Jobs – Bangalore",
-        jobs_text
-    )
+    print("\n📧 Preparing email...")
+
+if len(top_jobs) == 0:
+    body = """
+No jobs were detected by the automation today.
+
+You can still check these job searches:
+
+LinkedIn
+https://www.linkedin.com/jobs/search/?keywords=data%20analyst&location=Bengaluru
+
+Indeed
+https://in.indeed.com/jobs?q=data+analyst&l=Bangalore
+
+Naukri
+https://www.naukri.com/data-analyst-jobs-in-bangalore
+"""
+else:
+    body = "\n\n".join(top_jobs)
+
+send_email(
+    "Daily Data Analyst / MIS Jobs – Bengaluru",
+    body
+)
 
 if __name__ == "__main__":
     main()
