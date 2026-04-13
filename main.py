@@ -53,12 +53,14 @@ def main():
 
     unique_jobs = list(set(job_links))
 
-    jobs_text = "\n\n".join(unique_jobs[:20])
+    if len(unique_jobs) == 0:
+        jobs_text = "No jobs found today. Check job portals manually."
+    else:
+        jobs_text = "\n\n".join(unique_jobs[:20])
 
     send_email(
         "Daily Data Analyst Jobs – Bangalore",
         jobs_text
     )
-
 if __name__ == "__main__":
     main()
