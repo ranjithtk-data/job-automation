@@ -1,66 +1,63 @@
-import requests
-from bs4 import BeautifulSoup
 from email_sender import send_email
 
 keywords = [
-    "data analyst",
-    "junior data analyst",
-    "mis analyst",
-    "mis executive",
-    "reporting analyst",
-    "business analyst",
-    "analytics associate",
-    "data associate"
+"data analyst",
+"mis analyst",
+"mis executive",
+"power bi analyst",
+"sql analyst",
+"reporting analyst",
+"business analyst fresher"
 ]
-
-location = "Bangalore"
 
 job_links = []
 
-def search_indeed():
-    for keyword in keywords:
-        url = f"https://in.indeed.com/jobs?q={keyword.replace(' ','+')}&l={location}"
-        r = requests.get(url)
-        soup = BeautifulSoup(r.text, "html.parser")
+def linkedin_jobs():
+    for k in keywords:
+        link = f"https://www.linkedin.com/jobs/search/?keywords={k.replace(' ','%20')}&location=Bengaluru&f_E=2"
+        job_links.append(f"LinkedIn – {k}\n{link}")
 
-        for job in soup.select("a.tapItem"):
-            title = job.select_one("h2").text.strip()
-            link = "https://in.indeed.com" + job.get("href")
-            job_links.append(f"{title}\n{link}")
+def indeed_jobs():
+    for k in keywords:
+        link = f"https://in.indeed.com/jobs?q={k.replace(' ','+')}&l=Bangalore"
+        job_links.append(f"Indeed – {k}\n{link}")
 
-def search_naukri():
-    for keyword in keywords:
-        url = f"https://www.naukri.com/{keyword.replace(' ','-')}-jobs-in-{location}"
-        r = requests.get(url)
-        soup = BeautifulSoup(r.text, "html.parser")
+def naukri_jobs():
+    for k in keywords:
+        link = f"https://www.naukri.com/{k.replace(' ','-')}-jobs-in-bangalore"
+        job_links.append(f"Naukri – {k}\n{link}")
 
-        for job in soup.select("a.title"):
-            title = job.text.strip()
-            link = job.get("href")
-            job_links.append(f"{title}\n{link}")
+def company_careers():
 
-def search_linkedin():
-    for keyword in keywords:
-        link = f"https://www.linkedin.com/jobs/search/?keywords={keyword.replace(' ','%20')}&location=Bangalore"
-        job_links.append(f"LinkedIn search: {keyword}\n{link}")
+    companies = {
+        "Accenture":"https://www.accenture.com/in-en/careers/jobsearch",
+        "Wipro":"https://careers.wipro.com",
+        "Cognizant":"https://careers.cognizant.com",
+        "Capgemini":"https://www.capgemini.com/careers",
+        "Deloitte":"https://jobs.deloitte.com",
+        "EY":"https://careers.ey.com",
+        "KPMG":"https://home.kpmg/in/en/home/careers.html",
+        "JP Morgan":"https://careers.jpmorgan.com"
+    }
+
+    for name,link in companies.items():
+        job_links.append(f"{name} Careers\n{link}")
 
 def main():
-    print("Collecting jobs...")
 
-    search_indeed()
-    search_naukri()
-    search_linkedin()
+    linkedin_jobs()
+    indeed_jobs()
+    naukri_jobs()
+    company_careers()
 
     unique_jobs = list(set(job_links))
 
-    if len(unique_jobs) == 0:
-        jobs_text = "No jobs found today. Check job portals manually."
-    else:
-        jobs_text = "\n\n".join(unique_jobs[:20])
+    jobs_text = "\n\n".join(unique_jobs)
 
     send_email(
-        "Daily Data Analyst Jobs – Bangalore",
+        "Daily Data Analyst / MIS Jobs – Bangalore",
         jobs_text
     )
+
 if __name__ == "__main__":
     main()
