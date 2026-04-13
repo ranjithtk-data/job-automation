@@ -1,66 +1,25 @@
 from email_sender import send_email
 
-keywords = [
-"data analyst",
-"mis analyst",
-"mis executive",
-"power bi analyst",
-"sql analyst",
-"reporting analyst",
-"business analyst fresher"
-]
+jobs = []
 
-job_links = []
-
-def linkedin_jobs():
-    for k in keywords:
-        link = f"https://www.linkedin.com/jobs/search/?keywords={k.replace(' ','%20')}&location=Bengaluru&f_E=2"
-        job_links.append(f"LinkedIn – {k}\n{link}")
-
-def indeed_jobs():
-    for k in keywords:
-        link = f"https://in.indeed.com/jobs?q={k.replace(' ','+')}&l=Bangalore"
-        job_links.append(f"Indeed – {k}\n{link}")
-
-def naukri_jobs():
-    for k in keywords:
-        link = f"https://www.naukri.com/{k.replace(' ','-')}-jobs-in-bangalore"
-        job_links.append(f"Naukri – {k}\n{link}")
-
-def company_careers():
-
-    companies = {
-        "Accenture":"https://www.accenture.com/in-en/careers/jobsearch",
-        "Wipro":"https://careers.wipro.com",
-        "Cognizant":"https://careers.cognizant.com",
-        "Capgemini":"https://www.capgemini.com/careers",
-        "Deloitte":"https://jobs.deloitte.com",
-        "EY":"https://careers.ey.com",
-        "KPMG":"https://home.kpmg/in/en/home/careers.html",
-        "JP Morgan":"https://careers.jpmorgan.com"
-    }
-
-    for name,link in companies.items():
-        job_links.append(f"{name} Careers\n{link}")
+def fetch_jobs():
+    # Example job searches
+    jobs.append("LinkedIn Data Analyst Jobs\nhttps://www.linkedin.com/jobs/search/?keywords=data%20analyst&location=Bengaluru")
+    jobs.append("Indeed Data Analyst Jobs\nhttps://in.indeed.com/jobs?q=data+analyst&l=Bangalore")
+    jobs.append("Naukri Data Analyst Jobs\nhttps://www.naukri.com/data-analyst-jobs-in-bangalore")
 
 def main():
 
-    linkedin_jobs()
-    indeed_jobs()
-    naukri_jobs()
-    company_careers()
+    print("🔍 Collecting jobs...")
+    fetch_jobs()
 
-    unique_jobs = list(set(job_links))
+    print(f"📦 Total jobs found: {len(jobs)}")
 
-    jobs_text = "\n\n".join(unique_jobs)
+    if len(jobs) == 0:
+        email_body = """
+No Data Analyst / MIS / Business Analyst jobs were detected today in Bengaluru.
 
-    print("\n📧 Preparing email...")
-
-if len(top_jobs) == 0:
-    body = """
-No jobs were detected by the automation today.
-
-You can still check these job searches:
+Please check job portals manually:
 
 LinkedIn
 https://www.linkedin.com/jobs/search/?keywords=data%20analyst&location=Bengaluru
@@ -71,13 +30,17 @@ https://in.indeed.com/jobs?q=data+analyst&l=Bangalore
 Naukri
 https://www.naukri.com/data-analyst-jobs-in-bangalore
 """
-else:
-    body = "\n\n".join(top_jobs)
+    else:
+        email_body = "\n\n".join(jobs)
 
-send_email(
-    "Daily Data Analyst / MIS Jobs – Bengaluru",
-    body
-)
+    print("📧 Sending email...")
+
+    send_email(
+        "Daily Job Report – Bengaluru",
+        email_body
+    )
+
+    print("✅ Email sent!")
 
 if __name__ == "__main__":
     main()
