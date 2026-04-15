@@ -5,12 +5,12 @@ import os
 
 def send_email(subject, body):
 
-    sender = os.getenv("EMAIL_ADDRESS")
-    password = os.getenv("EMAIL_PASSWORD")
-    receiver = os.getenv("EMAIL_ADDRESS")
+   sender = os.getenv("EMAIL_ADDRESS")
+password = os.getenv("EMAIL_PASSWORD")
+receiver = os.getenv("EMAIL_ADDRESS")
 
-    print("Sender:", sender)
-    print("Receiver:", receiver)
+print("EMAIL_ADDRESS:", sender)
+print("EMAIL_PASSWORD:", password)
 
     if not sender or not password:
         print("❌ Email credentials not found.")
