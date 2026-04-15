@@ -5,16 +5,12 @@ import os
 
 def send_email(subject, body):
 
-   sender = os.getenv("EMAIL_ADDRESS")
-password = os.getenv("EMAIL_PASSWORD")
-receiver = os.getenv("EMAIL_ADDRESS")
+    sender = os.environ.get("EMAIL_ADDRESS")
+    password = os.environ.get("EMAIL_PASSWORD")
+    receiver = os.environ.get("EMAIL_ADDRESS")
 
-print("EMAIL_ADDRESS:", sender)
-print("EMAIL_PASSWORD:", password)
-
-    if not sender or not password:
-        print("❌ Email credentials not found.")
-        return
+    print("DEBUG sender:", sender)
+    print("DEBUG password:", password)
 
     if not body:
         body = "No jobs were detected today."
@@ -27,11 +23,8 @@ print("EMAIL_PASSWORD:", password)
     try:
         server = smtplib.SMTP("smtp.gmail.com", 587)
         server.starttls()
-
         server.login(sender, password)
-
         server.sendmail(sender, receiver, msg.as_string())
-
         server.quit()
 
         print("✅ Email sent successfully!")
