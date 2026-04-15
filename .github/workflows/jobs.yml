@@ -1,49 +1,28 @@
-# ─────────────────────────────────────────────────────────────
-#  .github/workflows/jobs.yml
-#  Runs daily at 5:00 AM IST (23:30 UTC previous day)
-# ─────────────────────────────────────────────────────────────
-
-name: Daily Job Alert – Bengaluru DA/BA
+name: Daily Job Automation
 
 on:
-  # ── Automatic daily schedule (5:00 AM IST = 23:30 UTC) ────
   schedule:
     - cron: "30 23 * * *"
-
-  # ── Manual trigger for testing ─────────────────────────────
   workflow_dispatch:
 
 jobs:
-  send-job-alerts:
-    name: Collect Jobs & Send Email
+  run-job-hunter:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repository
-      - name: ⬇️ Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      # 2. Set up Python
-      - name: 🐍 Set up Python 3.11
-        uses: actions/setup-python@v5
+      - name: Install Python
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
-      # 3. Cache pip packages for faster runs
-      - name: 📦 Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
 
-      # 4. Install dependencies
-      - name: 📥 Install dependencies
-        run: pip install -r requirements.txt
-
-      # 5. Run the job automation script
-      - name: 🚀 Run job automation
+      - name: Run automation
         env:
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: python main.py
