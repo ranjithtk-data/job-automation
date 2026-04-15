@@ -5,9 +5,9 @@ import os
 
 def send_email(subject, body):
 
-    sender = os.environ.get("jobalert287@gmail.com")
-    password = os.environ.get("EMAIL_PASS")
-    receiver = os.environ.get("jobalert287@gmail.com")
+    sender = os.environ.get("EMAIL_ADDRESS")
+    password = os.environ.get("EMAIL_PASSWORD")
+    receiver = os.environ.get("EMAIL_ADDRESS")
 
     if not body:
         body = "No jobs were detected today."
