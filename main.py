@@ -1,46 +1,23 @@
+from companies import companies
+from scraper import scrape_company
+from ai_filter import filter_jobs
 from email_sender import send_email
-from datetime import datetime
 
-print("=======================================================")
-print("  Daily Job Automation – Bengaluru DA/BA Roles")
-print(" ", datetime.now())
-print("=======================================================")
+all_jobs = []
 
-jobs = []
+for company in companies:
 
-# Job search links (these always work)
-jobs.append("LinkedIn Data Analyst Jobs\nhttps://www.linkedin.com/jobs/search/?keywords=data%20analyst&location=Bengaluru")
-jobs.append("Indeed Data Analyst Jobs\nhttps://in.indeed.com/jobs?q=data+analyst&l=Bangalore")
-jobs.append("Naukri Data Analyst Jobs\nhttps://www.naukri.com/data-analyst-jobs-in-bangalore")
-jobs.append("LinkedIn Business Analyst Jobs\nhttps://www.linkedin.com/jobs/search/?keywords=business%20analyst&location=Bengaluru")
-jobs.append("Naukri MIS Analyst Jobs\nhttps://www.naukri.com/mis-analyst-jobs-in-bangalore")
+    print("Checking:", company["name"])
 
-print(f"\n📦 Total job links prepared: {len(jobs)}")
+    jobs = scrape_company(company)
 
-print("\n📧 Preparing email...")
+    all_jobs.extend(jobs)
 
-if len(jobs) == 0:
-    email_body = """
-⚠️ No Data Analyst / Business Analyst / MIS jobs were detected today in Bengaluru.
+filtered_jobs = filter_jobs(all_jobs)
 
-Please check these job portals manually:
+final_jobs = filtered_jobs[:20]
 
-LinkedIn
-https://www.linkedin.com/jobs/search/?keywords=data%20analyst&location=Bengaluru
+print("Jobs found:", len(final_jobs))
 
-Indeed
-https://in.indeed.com/jobs?q=data+analyst&l=Bangalore
-
-Naukri
-https://www.naukri.com/data-analyst-jobs-in-bangalore
-"""
-else:
-    email_body = "\n\n".join(jobs)
-
-send_email(
-    "Daily Job Report – Bengaluru",
-    email_body
-)
-
-print("✅ Email sent successfully!")
-print("\n🎉 Done!")
+if final_jobs:
+    send_email(final_jobs)
