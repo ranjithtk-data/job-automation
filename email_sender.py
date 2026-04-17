@@ -1,33 +1,35 @@
 import smtplib
-from email.mime.text import MIMEText
 import os
+from email.mime.text import MIMEText
 
-
-def send_email(subject, body):
+def send_email(jobs):
 
     sender = os.environ.get("EMAIL_ADDRESS")
     password = os.environ.get("EMAIL_PASSWORD")
-    receiver = os.environ.get("EMAIL_ADDRESS")
 
-    print("DEBUG sender:", sender)
-    print("DEBUG password:", password)
+    html = "<h2>Bengaluru Data / Business Analyst Jobs</h2>"
 
-    if not body:
-        body = "No jobs were detected today."
+    for job in jobs:
 
-    msg = MIMEText(body)
-    msg["Subject"] = subject
+        html += f"""
+        <p>
+        <b>{job['company']}</b><br>
+        {job['title']}<br>
+        <a href="{job['link']}">Apply Here</a>
+        </p>
+        """
+
+    msg = MIMEText(html, "html")
+
+    msg["Subject"] = f"{len(jobs)} New Analyst Jobs – Bengaluru"
     msg["From"] = sender
-    msg["To"] = receiver
+    msg["To"] = sender
 
-    try:
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
-        server.login(sender, password)
-        server.sendmail(sender, receiver, msg.as_string())
-        server.quit()
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.starttls()
 
-        print("✅ Email sent successfully!")
+    server.login(sender, password)
 
-    except Exception as e:
-        print("❌ Email sending failed:", e)
+    server.sendmail(sender, sender, msg.as_string())
+
+    server.quit()
