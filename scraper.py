@@ -1,36 +1,25 @@
-import requests
-from bs4 import BeautifulSoup
+import feedparser
 
 def scrape_jobs():
 
-    url = "https://in.indeed.com/jobs?q=data+analyst&l=Bengaluru"
-
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
-
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, "html.parser")
+    feeds = [
+        "https://in.indeed.com/rss?q=data+analyst&l=Bengaluru",
+        "https://www.naukri.com/data-analyst-jobs-in-bangalore?format=rss"
+    ]
 
     jobs = []
 
-    cards = soup.select("div.job_seen_beacon")
+    for url in feeds:
 
-    for card in cards[:20]:
+        feed = feedparser.parse(url)
 
-        title = card.select_one("h2.jobTitle")
-        company = card.select_one("span.companyName")
-        link = card.select_one("a")
-
-        if title and company and link:
-
-            job_link = "https://in.indeed.com" + link.get("href")
+        for entry in feed.entries[:15]:
 
             jobs.append({
-                "title": title.text.strip(),
-                "company": company.text.strip(),
+                "title": entry.title,
+                "company": entry.get("author", "Company"),
                 "location": "Bengaluru",
-                "link": job_link
+                "link": entry.link
             })
 
     return jobs
