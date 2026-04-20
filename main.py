@@ -1,22 +1,16 @@
-from companies import companies
+from scraper import scrape_jobs
 from ai_filter import filter_jobs
 from email_sender import send_email
 
-jobs = []
+print("Scraping jobs...")
 
-for company in companies:
-
-    job = {
-        "company": company["name"],
-        "title": "Data Analyst",
-        "location": "Bengaluru",
-        "link": company["url"]
-    }
-
-    jobs.append(job)
+jobs = scrape_jobs()
 
 filtered_jobs = filter_jobs(jobs)
 
 final_jobs = filtered_jobs[:20]
 
-send_email(final_jobs)
+print("Jobs found:", len(final_jobs))
+
+if final_jobs:
+    send_email(final_jobs)
