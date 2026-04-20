@@ -14,21 +14,23 @@ def scrape_jobs():
 
     jobs = []
 
-    cards = soup.find_all("a", class_="tapItem")
+    cards = soup.select("div.job_seen_beacon")
 
     for card in cards[:20]:
 
-        title = card.find("h2")
-        company = card.find("span", class_="companyName")
-        link = card.get("href")
+        title = card.select_one("h2.jobTitle")
+        company = card.select_one("span.companyName")
+        link = card.select_one("a")
 
         if title and company and link:
+
+            job_link = "https://in.indeed.com" + link.get("href")
 
             jobs.append({
                 "title": title.text.strip(),
                 "company": company.text.strip(),
                 "location": "Bengaluru",
-                "link": "https://in.indeed.com" + link
+                "link": job_link
             })
 
     return jobs
